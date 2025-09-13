@@ -1,0 +1,14 @@
+burning pain = Shingles, Gastritis
+burning pain relieved by antacids = Functional dyspepsia
+burning pain radiates to other parts of the body relieved by antacids accompanied by black or bloody stools = Peptic ulcer
+pain accompanied by constipation triggered or worsened by coughing or other jarring movements = Appendicitis
+pain accompanied by abdominal swelling triggered or worsened by coughing or other jarring movements = Appendicitis
+pain accompanied by constipation triggered or worsened by coughing or other jarring movements = Diverticulitis
+pain accompanied by diarrhea triggered or worsened by coughing or other jarring movements = Appendicitis, Diverticulitis
+burning pain accompanied by abdominal swelling = Gastritis
+pain radiates to other parts of the body = Cholecystitis, Gallstones, Kidney stones, Menstrual cramps, Pancreatitis, Abdominal aortic aneurysm,  
+Pain located in middle abdomen and pain radiates to other parts of the body = Abdominal aortic aneurysm
+pain accompanied by abdominal swelling = Celiac disease, Crohn's disease, Food poisoning (foodborne illness), Intestinal obstruction, Irritable bowel syndrome
+pain accompanied by black or bloody stools = Colon cancer, Crohn's disease, Ulcerative colitis
+pain accompanied by constipation = Colon cancer, Constipation, Crohn's disease, Intestinal obstruction, Irritable bowel syndrome
+pain accompanied by diarrhea = Celiac disease, Colon cancer, Crohn's disease, Food poisoning (foodborne illness), Intestinal obstruction, Irritable bowel syndrome, Lactose intolerance, Ulcerative colitis, Viral gastroenteritis (stomach flu)
