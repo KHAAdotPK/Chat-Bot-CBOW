@@ -12,8 +12,8 @@
 #include "./../../lib/Numcy/header.hh"
 //#include "./../../lib/CBOW/lib/WordEmbedding-Algorithms/Word2Vec/CBOW/hyper-parameters.hh"
 
-#ifndef READ_TRAINED_SKIP_GRAM_WEIGHTS_TEST_APP_HH
-#define READ_TRAINED_SKIP_GRAM_WEIGHTS_TEST_APP_HH
+#ifndef READ_TRAINED_CBOW_WEIGHTS_TEST_APP_HH
+#define READ_TRAINED_CBOW_WEIGHTS_TEST_APP_HH
 
 #define DEFAULT_CHAT_BOT_CBOW_VOCABULARY_FILE_NAME "./data/adult_abdominal_pain_input.txt"
 

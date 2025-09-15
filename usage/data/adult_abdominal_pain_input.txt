@@ -1,14 +1,14 @@
-burning pain swelling
-burning pain antacids
-burning radiates stools
-constipation coughing
-pain swelling coughing
-pain swelling constipation
-pain burning coughing
-burning swelling
-pain radiates burning
-pain located abdomen
-swelling bloody
-bloody stools abdomen
-pain burning constipation
-pain swelling diarrhea
+burning pain
+burning pain relieved by antacids
+burning pain radiates to other parts of the body relieved by antacids accompanied by black or bloody stools
+pain accompanied by constipation triggered or worsened by coughing or other jarring movements
+pain accompanied by abdominal swelling triggered or worsened by coughing or other jarring movements
+pain accompanied by constipation triggered or worsened by coughing or other jarring movements
+pain accompanied by diarrhea triggered or worsened by coughing or other jarring movements
+burning pain accompanied by abdominal swelling
+pain radiates to other parts of the body
+Pain located in middle abdomen and pain radiates to other parts of the body
+pain accompanied by abdominal swelling
+pain accompanied by black or bloody stools
+pain accompanied by constipation
+pain accompanied by diarrhea
