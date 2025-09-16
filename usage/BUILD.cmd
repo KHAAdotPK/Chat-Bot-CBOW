@@ -1,2 +1,2 @@
-cl main.cpp /EHsc /Feweights.exe
+cl src/main.cpp /EHsc /Feweights.exe
 

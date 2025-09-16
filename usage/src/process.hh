@@ -36,6 +36,8 @@ void similarity (Collective<E>& W, const PROMPT_PTR head, CORPUS& vocab) throw (
 
     while (ptr != NULL)
     {
+        E aggregate_validation_loss = 0;
+
         if (ptr->lptr != NULL)
         {
             v = W.slice(ptr->j*W.getShape().getNumberOfColumns(), W.getShape().getNumberOfColumns());
@@ -47,10 +49,13 @@ void similarity (Collective<E>& W, const PROMPT_PTR head, CORPUS& vocab) throw (
                 u = W.slice(i*W.getShape().getNumberOfColumns(), W.getShape().getNumberOfColumns());
                       
                 E result = Numcy::Spatial::Distance::cosine<E>(u, v);
+                aggregate_validation_loss = aggregate_validation_loss + (1 - result);
 
                 std::cout<< "(" << vocab[i + INDEX_ORIGINATES_AT_VALUE].c_str() << ") " << result << ", ";
             }
             std::cout<< std::endl;
+
+            std::cout<< "Validation Loss = " << aggregate_validation_loss / W.getShape().getNumberOfColumns() << std::endl;
         }
         else
         {
