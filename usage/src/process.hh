@@ -44,7 +44,7 @@ void similarity (Collective<E>& W, const PROMPT_PTR head, CORPUS& vocab) throw (
 
             std::cout<< ptr->cptr->str.c_str() << ": ";
 
-            for (cc_tokenizer::string_character_traits<char>::size_type i = 0; i < /*W.getShape().getNumberOfRows()*/ vocab.numberOfUniqueTokens(); i++)
+            for (cc_tokenizer::string_character_traits<char>::size_type i = 0; i < /*W.getShape().getNumberOfRows() -> */ vocab.numberOfUniqueTokens(); i++)
             {
                 u = W.slice(i*W.getShape().getNumberOfColumns(), W.getShape().getNumberOfColumns());
                       
@@ -128,6 +128,41 @@ void traverse(Collective<E>& W, const PROMPT_PTR head) throw (ala_exception)
 
         current = current->next;
     }*/
+}
+
+template <typename E = double>
+void traverse_context_to_target_pairs (Collective<E>& W1, Collective<E>& W2_t, const PROMPT_PTR head, CORPUS& vocab) throw (ala_exception)
+{
+    PROMPT_PTR ptr = head;
+    
+    while (ptr != NULL)
+    {
+        Collective<E> u, v; 
+        
+        if (ptr->lptr != NULL)
+        {
+            std::cout<< ptr->cptr->str.c_str() << ": ";
+
+            u = W1.slice(ptr->j*W1.getShape().getNumberOfColumns(), W1.getShape().getNumberOfColumns());
+
+            for (cc_tokenizer::string_character_traits<char>::size_type i = 0; i < /*W2_t.getShape().getNumberOfRows() -> */ vocab.numberOfUniqueTokens(); i++)
+            {                
+                v = W2_t.slice(i*W2_t.getShape().getNumberOfColumns(), W2_t.getShape().getNumberOfColumns());
+                      
+                E result = Numcy::Spatial::Distance::cosine<E>(u, v);
+                
+                std::cout<< "(" << vocab[i + INDEX_ORIGINATES_AT_VALUE].c_str() << ") " << result << ", ";
+            }            
+        }
+        else
+        {            
+            std::cout<< ptr->cptr->str.c_str() << ": (OOV)";
+        }
+
+        std::cout<< std::endl << ":-" << std::endl;
+
+        ptr = ptr->next;
+    }
 }
 
 #endif

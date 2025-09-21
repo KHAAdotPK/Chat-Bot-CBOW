@@ -17,7 +17,7 @@
 int main(int argc, char* argv[])
 {   
     PROMPT_PTR head = NULL;
-    ARG arg_common, arg_words, arg_w1, arg_w2, arg_help, arg_vocab, arg_average, arg_pairs, arg_proper, arg_verbose;
+    ARG arg_common, arg_words, arg_w1, arg_w2, arg_help, arg_vocab, arg_average, arg_pairs, arg_proper, arg_verbose, arg_w2_t;
     cc_tokenizer::csv_parser<cc_tokenizer::String<char>, char> argsv_parser(cc_tokenizer::String<char>(COMMAND));
     cc_tokenizer::csv_parser<cc_tokenizer::String<char>, char> argsv_parser_average(cc_tokenizer::String<char>(COMMAND_average));
     cc_tokenizer::String<char> vocab_file_name;
@@ -28,6 +28,15 @@ int main(int argc, char* argv[])
         HELP_DUMP(argsv_parser, arg_help);
 
         return 0;                     
+    }
+
+    FIND_ARG(argv, argc, argsv_parser, "?", arg_help);
+    if (arg_help.i)
+    {
+        HELP(argsv_parser, arg_help, ALL);
+        HELP_DUMP(argsv_parser, arg_help);
+
+        return 0;
     }
 
     FIND_ARG(argv, argc, argsv_parser, "--vocab", arg_vocab);
@@ -136,6 +145,96 @@ int main(int argc, char* argv[])
         }*/
     }
 
+    FIND_ARG(argv, argc, argsv_parser, "w2", arg_w2); 
+    if (arg_w2.i)
+    {
+        FIND_ARG_BLOCK(argv, argc, argsv_parser, arg_w2);
+
+        if (!arg_w2.argc)
+        {
+            ARG arg_w2_help;
+            HELP(argsv_parser, arg_w2_help, "--w2");                
+            HELP_DUMP(argsv_parser, arg_w2_help); 
+
+            return 0;
+        }
+    }
+
+    Collective<double> W2;
+
+    if (arg_w2.argc)
+    {
+        W2 = Collective<double>{NULL, DIMENSIONS{vocab.numberOfUniqueTokens() /*vocab.numberOfTokens()*/, SKIP_GRAM_EMBEDDING_VECTOR_SIZE, NULL, NULL}};
+
+        try
+        {        
+            READ_W_BIN(W2, argv[arg_w2.i + 1], double);
+        }
+        catch (ala_exception& e)
+        {
+            std::cerr<< "main.cpp -> " << e.what() << std::endl;
+            
+            return 0;
+        }
+
+        /*std::cout<< "W1: " << W1.getShape().getDimensionsOfArray().getNumberOfInnerArrays() << " X " <<  W1.getShape().getNumberOfColumns() << std::endl;
+
+        for (int i = 0; i < W1.getShape().getNumberOfRows(); i++)
+        {
+            for (int j = 0; j < W1.getShape().getNumberOfColumns(); j++)
+            {
+                std::cout<< W1[i*W1.getShape().getNumberOfColumns() + j] << " ";
+            }
+
+            std::cout<< std::endl;
+        }*/
+    }
+
+    FIND_ARG(argv, argc, argsv_parser, "--w2-t", arg_w2_t); 
+    if (arg_w2_t.i)
+    {
+        FIND_ARG_BLOCK(argv, argc, argsv_parser, arg_w2_t);
+
+        if (!arg_w2_t.argc)
+        {
+            ARG arg_w2_t_help;
+            HELP(argsv_parser, arg_w2_t_help, "--w2-t");                
+            HELP_DUMP(argsv_parser, arg_w2_t_help); 
+
+            return 0;
+        }
+    }
+
+    Collective<double> W2_t;
+
+    if (arg_w2_t.argc)
+    {
+        W2_t = Collective<double>{NULL, W1.getShape()};
+
+        try
+        {        
+            READ_W_BIN(W2_t, argv[arg_w2_t.i + 1], double);
+        }
+        catch (ala_exception& e)
+        {
+            std::cerr<< "main.cpp -> " << e.what() << std::endl;
+            
+            return 0;
+        }
+
+        /*std::cout<< "W1: " << W1.getShape().getDimensionsOfArray().getNumberOfInnerArrays() << " X " <<  W1.getShape().getNumberOfColumns() << std::endl;
+
+        for (int i = 0; i < W1.getShape().getNumberOfRows(); i++)
+        {
+            for (int j = 0; j < W1.getShape().getNumberOfColumns(); j++)
+            {
+                std::cout<< W1[i*W1.getShape().getNumberOfColumns() + j] << " ";
+            }
+
+            std::cout<< std::endl;
+        }*/
+    }
+
     PROMPT_PTR current = NULL;
     bool found = false;
     for (int i = 0; i < arg_words.argc; i++)
@@ -216,34 +315,38 @@ int main(int argc, char* argv[])
             }
             else
             {
-            // Word not in vocabulary
-            current->next = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));
-            current->next->prev = current;
-            current->next->next = NULL;
+                // Word not in vocabulary
+                current->next = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));
+                current->next->prev = current;
+                current->next->next = NULL;
 
-            current = current->next;
+                current = current->next;
 
-            current->cptr = reinterpret_cast<COMPOSITE_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(COMPOSITE)));
-            current->lptr = NULL;
-            current->j = INDEX_NOT_FOUND_AT_VALUE;
+                current->cptr = reinterpret_cast<COMPOSITE_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(COMPOSITE)));
+                current->lptr = NULL;
+                current->j = INDEX_NOT_FOUND_AT_VALUE;
             
-            current->cptr->index = INDEX_NOT_FOUND_AT_VALUE;
-            current->cptr->n_ptr = 0;
-            current->cptr->probability = 0;
-            current->cptr->ptr = NULL;
-            current->cptr->next = NULL;
-            current->cptr->prev = NULL;
+                current->cptr->index = INDEX_NOT_FOUND_AT_VALUE;
+                current->cptr->n_ptr = 0;
+                current->cptr->probability = 0;
+                current->cptr->ptr = NULL;
+                current->cptr->next = NULL;
+                current->cptr->prev = NULL;
 
-            current->cptr->str = cc_tokenizer::String<char>(argv[arg_words.i + 1 + i]);
+                current->cptr->str = cc_tokenizer::String<char>(argv[arg_words.i + 1 + i]);
             }
         }
 
         found = false;
     }
-        
+    
+    /*
     traverse<double> (W1, head);
     similarity<double> (W1, head, vocab);
     // Keep in mind that, pointer to composite and line token numbers are not owned by you , they are there as references 
+     */
+
+    traverse_context_to_target_pairs<double>(W1, W2_t, head, vocab);
     cleanup (head);
 
     std::cout<< std::endl << "-:END:-" << std::endl;
