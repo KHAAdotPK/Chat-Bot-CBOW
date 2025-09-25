@@ -34,6 +34,8 @@ void similarity (Collective<E>& W, const PROMPT_PTR head, CORPUS& vocab) throw (
     PROMPT_PTR ptr = head;
     Collective<E> u, v;
 
+    std::cout<< "-:Similarity W1:-" << std::endl;
+
     while (ptr != NULL)
     {
         E aggregate_validation_loss = 0;
@@ -42,7 +44,7 @@ void similarity (Collective<E>& W, const PROMPT_PTR head, CORPUS& vocab) throw (
         {
             v = W.slice(ptr->j*W.getShape().getNumberOfColumns(), W.getShape().getNumberOfColumns());
 
-            std::cout<< ptr->cptr->str.c_str() << ": ";
+            std::cout<< ptr->cptr->str.c_str() << "(" << ptr->lptr->l << "," << ptr->lptr->t << "): ";
 
             for (cc_tokenizer::string_character_traits<char>::size_type i = 0; i < /*W.getShape().getNumberOfRows() -> */ vocab.numberOfUniqueTokens(); i++)
             {
@@ -135,6 +137,8 @@ void traverse_context_to_target_pairs (Collective<E>& W1, Collective<E>& W2_t, c
 {
     PROMPT_PTR ptr = head;
     
+    std::cout<< "-:Similarity W2:-" << std::endl;
+
     while (ptr != NULL)
     {
         Collective<E> u, v; 
