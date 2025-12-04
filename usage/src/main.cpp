@@ -16,7 +16,7 @@
 
 int main(int argc, char* argv[])
 {   
-    PROMPT_PTR head = NULL;
+    struct prompt<double>* head = NULL;
     ARG arg_common, arg_words, arg_w1, arg_w2, arg_help, arg_vocab, arg_average, arg_pairs, arg_proper, arg_verbose, arg_w2_t;
     cc_tokenizer::csv_parser<cc_tokenizer::String<char>, char> argsv_parser(cc_tokenizer::String<char>(COMMAND));
     cc_tokenizer::csv_parser<cc_tokenizer::String<char>, char> argsv_parser_average(cc_tokenizer::String<char>(COMMAND_average));
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
         }*/
     }
 
-    PROMPT_PTR current = NULL;
+    struct prompt<double>* current = NULL;
     bool found = false;
     for (int i = 0; i < arg_words.argc; i++)
     {                
@@ -266,7 +266,7 @@ int main(int argc, char* argv[])
 
                 if (head == NULL)
                 {
-                    head = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));                    
+                    head = reinterpret_cast<struct prompt<double>*>(cc_tokenizer::allocator<char>().allocate(sizeof(struct prompt<double>)));                    
                     head->next = NULL;
                     head->prev = NULL;
 
@@ -278,7 +278,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    current->next = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));
+                    current->next = reinterpret_cast<struct prompt<double>*>(cc_tokenizer::allocator<char>().allocate(sizeof(struct prompt<double>)));
                     current->next->prev = current;
                     current = current->next;
                     current->next = NULL;
@@ -294,13 +294,17 @@ int main(int argc, char* argv[])
         { 
             if (head == NULL)
             {
-                head = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));                    
+                head = reinterpret_cast<struct prompt<double>*>(cc_tokenizer::allocator<char>().allocate(sizeof(struct prompt<double>)));                    
                 head->next = NULL;
                 head->prev = NULL;
 
                 head->cptr = reinterpret_cast<COMPOSITE_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(COMPOSITE)));
                 head->lptr = NULL;
                 head->j = INDEX_NOT_FOUND_AT_VALUE; 
+
+                head->result = 0;
+                head->similarity_head = NULL;
+                head->n = 0;
                     
                 current = head;
 
@@ -316,7 +320,7 @@ int main(int argc, char* argv[])
             else
             {
                 // Word not in vocabulary
-                current->next = reinterpret_cast<PROMPT_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(PROMPT)));
+                current->next = reinterpret_cast<struct prompt<double>*>(cc_tokenizer::allocator<char>().allocate(sizeof(struct prompt<double>)));
                 current->next->prev = current;
                 current->next->next = NULL;
 
@@ -325,6 +329,10 @@ int main(int argc, char* argv[])
                 current->cptr = reinterpret_cast<COMPOSITE_PTR>(cc_tokenizer::allocator<char>().allocate(sizeof(COMPOSITE)));
                 current->lptr = NULL;
                 current->j = INDEX_NOT_FOUND_AT_VALUE;
+
+                current->result = 0;
+                current->similarity_head = NULL;
+                current->n = 0;
             
                 current->cptr->index = INDEX_NOT_FOUND_AT_VALUE;
                 current->cptr->n_ptr = 0;
@@ -342,11 +350,22 @@ int main(int argc, char* argv[])
     
     /*
     traverse<double> (W1, head);
-    similarity<double> (W1, head, vocab);
-    // Keep in mind that, pointer to composite and line token numbers are not owned by you , they are there as references 
      */
 
-    traverse_context_to_target_pairs<double>(W1, W2_t, head, vocab);
+    std::cout<< "Context similarities..." << std::endl; 
+    similarity<double> (W1, head, vocab);
+    bubble_sort (head);
+    traverse_context_similarity (head, vocab);
+    // Keep in mind that, pointer to composite and line token numbers are not owned by you , they are there as references     
+
+    /*traverse_context_to_target_pairs<double>(W1, W2_t, head, vocab);*/
+
+    std::cout<< "Context to target similarities..." << std::endl;
+
+    similarity_w2(W1, W2_t, head, vocab);
+    bubble_sort_w2 (head);
+    traverse_context_similarity_W2 (head, vocab);
+
     cleanup (head);
 
     std::cout<< std::endl << "-:END:-" << std::endl;

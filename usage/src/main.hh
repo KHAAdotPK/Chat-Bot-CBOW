@@ -64,16 +64,25 @@ verbose --verbose (Display of output, verbosly.)\n"
 #include "./../../lib/CBOW/lib/WordEmbedding-Algorithms/Word2Vec/CBOW/hyper-parameters.hh"
 #include "./../../lib/pairs/src/pairs.hh"
 
-typedef struct prompt 
+template <typename E = double>
+struct prompt 
 {
     COMPOSITE_PTR cptr;
     LINETOKENNUMBER_PTR lptr;
     cc_tokenizer::string_character_traits<char>::size_type j; // Displacement into unique vocabulary and also in word embedings
 
+    E result; // Similarity result
+    prompt* similarity_head;
+    cc_tokenizer::string_character_traits<char>::size_type n; // Number of similar words/tokens
+
+    // After thought
+    E result_similarity_target;
+    prompt* similarity_target_head;
+    cc_tokenizer::string_character_traits<char>::size_type n_target; // Number of similar words/tokens
+
     prompt* next;
     prompt* prev;    
-} PROMPT;
-typedef PROMPT* PROMPT_PTR;
+};
 
 #include "process.hh"
 
